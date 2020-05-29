@@ -1,0 +1,4 @@
+export const USERINFO = "USERINFO"
+export const LOCATION = "LOCATION"
+export const RECORD_USERINFO = "RECORD_USERINFO"
+export const SAVE_GEOHASH ='SAVE_GEOHASH'
