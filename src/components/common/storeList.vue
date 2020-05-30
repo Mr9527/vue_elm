@@ -1,6 +1,6 @@
 <template>
   <div class="store_list_container">
-    <ul class="store_list" v-if="storeList.length">
+    <ul v-load-more="loadMoreData" class="store_list" v-if="storeList.length" type="1">
       <router-link
         tag="li"
         :to="{paht:'/store',query:{geohash,id:item.id}}"
@@ -104,6 +104,15 @@
         <img src="../../images/shopback.svg" class="list_empty_content" />
       </li>
     </ul>
+    <aside class="return_top" @click="backTop" v-if="showBackStatus">
+      <svg class="back_top_svg">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#backtop" />
+      </svg>
+    </aside>
+    <div ref="abc" style="background-color: red;"></div>
+    <transition name="loading">
+      <loading v-show="showLoading"></loading>
+    </transition>
   </div>
 </template>
 
@@ -113,13 +122,18 @@ import { shopList } from "src/service/getData";
 import { imgBaseUrl } from "src/config/env";
 import { showBack, animate } from "src/config/mUtils";
 import ratingStar from "src/components/common/ratingStar";
+import loading from "src/components/common/loading";
+import { loadMore } from "src/components/common/minxin";
 export default {
   data() {
     return {
       imgBaseUrl,
-      offset: 1,
+      offset: 0,
       storeList: [],
-      isShowDetial: -1
+      showBackStatus: false,
+      showLoading: true,
+      touchend: false,
+      repeatReuqest: false
     };
   },
   props: {
@@ -129,18 +143,28 @@ export default {
     ...mapState(["latitude", "longtiude"])
   },
   mounted() {
-    this.loadPage();
+    this.initital();
   },
   methods: {
-    async loadPage() {
-      shopList(this.latitude, this.longtiude, this.offset).then(res => {
-        for (var i = 0; i < res.length; i++) {
-          res[i].supports.forEach((item, index) => {
-            item.isShow = index < 2;
-          });
-        }
-        this.storeList = res;
+    async initital() {
+      showBack(status => {
+        this.showBackStatus = status;
       });
+      let res = await this.loadPage();
+      this.storeList = res;
+      this.hideLoading();
+    },
+    async loadPage() {
+      let res = await shopList(this.latitude, this.longtiude, this.offset);
+      for (var i = 0; i < res.length; i++) {
+        res[i].supports.forEach((item, index) => {
+          item.isShow = index < 2;
+        });
+      }
+      if (res.length < 20) {
+        this.touchend = true;
+      }
+      return res;
     },
     switchActivitiesLayout(list) {
       list.supports.forEach((item, index) => {
@@ -148,11 +172,34 @@ export default {
           item.isShow = !item.isShow;
         }
       });
+    },
+    backTop() {
+      animate(document.body, { scrollTop: "0" }, 400, "ease-out");
+      animate(document.documentElement, { scrollTop: "0" }, 400, "ease-out");
+    },
+    hideLoading() {
+      this.showLoading = false;
+    },
+    async loadMoreData() {
+      if (this.touchend) {
+        return;
+      }
+      if (this.repeatReuqest) {
+        return;
+      }
+      this.repeatReuqest = true;
+      this.offset += 20;
+      let res = await loadPage();
+      this.storeList.concat(res);
+      this.hideLoading();
+      this.repeatReuqest = false;
     }
   },
   components: {
+    loading,
     ratingStar
-  }
+  },
+  mixins: [loadMore]
 };
 </script>
 
@@ -273,5 +320,13 @@ export default {
     @include wh(0.3rem, 0.15rem);
     fill: #999;
   }
+}
+.return_top {
+  position: fixed;
+  right: 1rem;
+  bottom: 3rem;
+}
+.back_top_svg {
+  @include wh(2rem, 2rem);
 }
 </style>
