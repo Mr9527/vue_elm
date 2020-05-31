@@ -1,25 +1,27 @@
 <template>
   <div class="store_list_container">
-    <ul v-load-more="loadMoreData" class="store_list" v-if="storeList.length" type="1">
-      <router-link
-        tag="li"
-        :to="{paht:'/store',query:{geohash,id:item.id}}"
-        v-for="item in storeList"
-        :key="item.id"
-      >
-        <section class="store_item">
-          <img class="store_item_img" :src="imgBaseUrl+item.image_path" />
-          <section class="store_item_content">
-            <header class="store_item_header">
-              <div>
-                <span v-if="item.is_premium" class="premium">品牌</span>
-                <span class="store_item_title ellipsis">{{item.name}}</span>
-              </div>
+    <pull-to-refresh :on-refresh="initital" :on-infinite="onInfinite">
+      <div slot="list">
+        <ul class="store_list" v-if="storeList.length" type="1">
+          <router-link
+            tag="li"
+            :to="{paht:'/store',query:{geohash,id:item.id}}"
+            v-for="item in storeList"
+            :key="item.id"
+          >
+            <section class="store_item">
+              <img class="store_item_img" :src="imgBaseUrl+item.image_path" />
+              <section class="store_item_content">
+                <header class="store_item_header">
+                  <div>
+                    <span v-if="item.is_premium" class="premium">品牌</span>
+                    <span class="store_item_title ellipsis">{{item.name}}</span>
+                  </div>
 
-              <div>
-                <span
-                  v-for="tag in item.supports"
-                  :style="{
+                  <div>
+                    <span
+                      v-for="tag in item.supports"
+                      :style="{
                     color:'#'+tag.icon_color,
                     borderWidth:'0.1px',
                     borderStyle:'solid',
@@ -29,81 +31,83 @@
                     paddingLeft:'0.04rem',
                     borderRadius:'0.08rem',
                     marginRight:'0.1rem'}"
-                  :key="tag.id"
-                >{{ tag.icon_name }}</span>
-              </div>
-            </header>
-            <div class="store_item_star">
-              <div class="rating_container">
-                <rating-star :rating="item.rating"></rating-star>
-                <span>{{item.rating}}</span>
-                <span>月售{{item.recent_order_num}}单</span>
-              </div>
-              <div class="label_list">
-                <span
-                  v-if="item.delivery_mode"
-                  :style="{backgroundColor:'#'+item.delivery_mode.color,
+                      :key="tag.id"
+                    >{{ tag.icon_name }}</span>
+                  </div>
+                </header>
+                <div class="store_item_star">
+                  <div class="rating_container">
+                    <rating-star :rating="item.rating"></rating-star>
+                    <span>{{item.rating}}</span>
+                    <span>月售{{item.recent_order_num}}单</span>
+                  </div>
+                  <div class="label_list">
+                    <span
+                      v-if="item.delivery_mode"
+                      :style="{backgroundColor:'#'+item.delivery_mode.color,
                   fontSize:'0.3rem',
                   padding:'0.05rem',
                   borderRadius:'0.05rem',
                   color:'#fff'}"
-                >{{item.delivery_mode.text}}</span>
-              </div>
-            </div>
-            <div class="store_item_delivery">
-              <div>
-                <span>¥{{item.float_minimum_order_amount}}起送</span>
-                <span>|</span>
-                <span>配送¥{{item.float_delivery_fee}}</span>
-              </div>
-              <div>
-                <span>{{item.distance}}</span>
-                <span>|</span>
-                <span>{{item.order_lead_time}}</span>
-              </div>
-            </div>
-            <span>
-              <img class="dashedline" src="../../images/dashedline.svg" alt="dashedline" />
-            </span>
-            <section class="index_activities">
-              <div class="index_activities_list">
-                <div
-                  class="index_activities_item"
-                  v-for="storeTag in item.supports"
-                  :key="storeTag.id"
-                  v-show="storeTag.isShow"
-                >
-                  <!-- v-show="index<2||item.id==isShowDetial" -->
+                    >{{item.delivery_mode.text}}</span>
+                  </div>
+                </div>
+                <div class="store_item_delivery">
+                  <div>
+                    <span>¥{{item.float_minimum_order_amount}}起送</span>
+                    <span>|</span>
+                    <span>配送¥{{item.float_delivery_fee}}</span>
+                  </div>
+                  <div>
+                    <span>{{item.distance}}</span>
+                    <span>|</span>
+                    <span>{{item.order_lead_time}}</span>
+                  </div>
+                </div>
+                <span>
+                  <img class="dashedline" src="../../images/dashedline.svg" alt="dashedline" />
+                </span>
+                <section class="index_activities">
+                  <div class="index_activities_list">
+                    <div
+                      class="index_activities_item"
+                      v-for="storeTag in item.supports"
+                      :key="storeTag.id"
+                      v-show="storeTag.isShow"
+                    >
+                      <!-- v-show="index<2||item.id==isShowDetial" -->
 
-                  <!-- v-show="index>1&&item.id==isShowDetial?'index_activities_item_hide':''" -->
+                      <!-- v-show="index>1&&item.id==isShowDetial?'index_activities_item_hide':''" -->
 
-                  <span
-                    class="index_activities_item_tag"
-                    :style="{
+                      <span
+                        class="index_activities_item_tag"
+                        :style="{
                     backgroundColor:'#'+storeTag.icon_color,
                    padding:'0.1rem'}"
-                  >{{storeTag.icon_name}}</span>
-                  <span class="index_activities_item_dsc">{{storeTag.description}}</span>
-                </div>
-              </div>
-              <div
-                v-if="item.supports.length>2"
-                class="activities_open"
-                v-on:click.stop="switchActivitiesLayout(item)"
-              >
-                <span>{{item.supports.length}}个活动</span>
-                <img src="../../images/detail_tag.svg" />
-              </div>
+                      >{{storeTag.icon_name}}</span>
+                      <span class="index_activities_item_dsc">{{storeTag.description}}</span>
+                    </div>
+                  </div>
+                  <div
+                    v-if="item.supports.length>2"
+                    class="activities_open"
+                    v-on:click.stop="switchActivitiesLayout(item)"
+                  >
+                    <span>{{item.supports.length}}个活动</span>
+                    <img src="../../images/detail_tag.svg" />
+                  </div>
+                </section>
+              </section>
             </section>
-          </section>
-        </section>
-      </router-link>
-    </ul>
-    <ul v-else class="animation_opactiy">
-      <li v-for="item  in 10" :key="item" class="list_empty_li">
-        <img src="../../images/shopback.svg" class="list_empty_content" />
-      </li>
-    </ul>
+          </router-link>
+        </ul>
+        <ul v-else class="animation_opactiy">
+          <li v-for="item  in 10" :key="item" class="list_empty_li">
+            <img src="../../images/shopback.svg" class="list_empty_content" />
+          </li>
+        </ul>
+      </div>
+    </pull-to-refresh>
     <aside class="return_top" @click="backTop" v-if="showBackStatus">
       <svg class="back_top_svg">
         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#backtop" />
@@ -124,6 +128,7 @@ import { showBack, animate } from "src/config/mUtils";
 import ratingStar from "src/components/common/ratingStar";
 import loading from "src/components/common/loading";
 import { loadMore } from "src/components/common/minxin";
+import PullToRefresh from "src/components/common/PullToRefresh";
 export default {
   data() {
     return {
@@ -146,13 +151,14 @@ export default {
     this.initital();
   },
   methods: {
-    async initital() {
+    async initital(done = () => {}) {
       showBack(status => {
         this.showBackStatus = status;
       });
       let res = await this.loadPage();
       this.storeList = res;
       this.hideLoading();
+      done();
     },
     async loadPage() {
       let res = await shopList(this.latitude, this.longtiude, this.offset);
@@ -180,7 +186,7 @@ export default {
     hideLoading() {
       this.showLoading = false;
     },
-    async loadMoreData() {
+    async onInfinite(done) {
       if (this.touchend) {
         return;
       }
@@ -189,17 +195,18 @@ export default {
       }
       this.repeatReuqest = true;
       this.offset += 20;
-      let res = await loadPage();
-      this.storeList.concat(res);
+      let res = await this.loadPage();
+      this.storeList = this.storeList.concat(res);
+      done();
       this.hideLoading();
       this.repeatReuqest = false;
     }
   },
   components: {
     loading,
-    ratingStar
-  },
-  mixins: [loadMore]
+    ratingStar,
+    PullToRefresh
+  }
 };
 </script>
 
@@ -328,5 +335,10 @@ export default {
 }
 .back_top_svg {
   @include wh(2rem, 2rem);
+}
+.store_list_container {
+  flex-grow: 0;
+  flex-shrink: 1;
+
 }
 </style>

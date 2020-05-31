@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex_home">
     <head-top :title="address.name" login-state="msite" @titleClick="chooseCity">
       <router-link :to="'/search/geohash'" class="search" slot="nav">
         <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -37,7 +37,7 @@
       <header class="store_header">
         <span class="store_List_header">—— 推荐商家 ——</span>
       </header>
-      <store-list v-if="geohashState" :geohash="address.geohash"></store-list>
+      <store-list class="sxxxx" v-if="geohashState" :geohash="address.geohash"></store-list>
     </div>
   </div>
 </template>
@@ -149,5 +149,13 @@ export default {
       font-family: "Courier New", Courier, monospace;
     }
   }
+}
+.flex_home {
+  display: flex;
+  flex-direction: column;
+}
+.sxxxx {
+  flex-grow: 0;
+  flex-shrink: 1;
 }
 </style>
