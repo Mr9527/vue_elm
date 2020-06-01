@@ -331,7 +331,7 @@ export default {
 .return_top {
   position: fixed;
   right: 1rem;
-  bottom: 3rem;
+  bottom: 6rem;
 }
 .back_top_svg {
   @include wh(2rem, 2rem);
@@ -339,6 +339,5 @@ export default {
 .store_list_container {
   flex-grow: 0;
   flex-shrink: 1;
-
 }
 </style>

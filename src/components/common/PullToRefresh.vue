@@ -60,12 +60,15 @@ export default {
       infiniteLoading: false
     };
   },
-  activated() {
-    // document.addEventListener("scroll", event => {
-    //   if (vm.$data.onInfinite || vm.$data.infiniteLoading) {
-    //     vm.onScroll(event);
-    //   }
-    // });
+  mounted() {
+    let scrollCheck = this.onScroll;
+    document.body.addEventListener(
+      "scroll",
+      event => {
+        scrollCheck(event);
+      },
+      false
+    );
   },
   methods: {
     touchStart(e) {
@@ -148,17 +151,29 @@ export default {
       console.log("bottom:" + bottom);
       console.log("infiniteHeight:" + innerHeight);
       if (bottom < infiniteHeight) this.infinite();
+    },
+    computerScrollIsLoadMore() {
+      let outerHeight = this.$el.clientHeight;
+      let innerHeight = this.$el.querySelector(".inner").clientHeight;
+      let scrollTop = this.$el.scrollTop;
+      let ptrHeight = this.onRefresh
+        ? this.$el.querySelector(".pull-refresh").clientHeight
+        : 0;
+      let infiniteHeight = this.$el.querySelector(".load-more").clientHeight;
+      let bottom = innerHeight - outerHeight - scrollTop - ptrHeight;
+      console.log("bottom:" + bottom);
+      console.log("infiniteHeight:" + innerHeight);
     }
   }
 };
 </script>
 <style scoped>
 .yo-scroll {
-  position: fixed;
+  /* position: fixed;
   top: 9.5rem;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 0; */
   width: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
