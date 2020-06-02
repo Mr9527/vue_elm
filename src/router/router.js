@@ -24,6 +24,10 @@ const food = (r) =>
   require.ensure([], () => r(require("../page/store/food")), "food");
 const store = (r) =>
   require.ensure([], () => r(require("../page/store/store")), "store");
+const storeListPage = (r) =>
+  require.ensure([], () => r(require("../page/store/storeListPage")), "storeListPage");
+
+
 
 export default [{
   path: "/",
@@ -63,6 +67,9 @@ export default [{
     }, {
       path: "/food",
       component: food,
+    }, {
+      path: '/storeListPage',
+      component: storeListPage
     }
   ],
 }, ];

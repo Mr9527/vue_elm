@@ -17,7 +17,7 @@
             :key="index"
           >
             <router-link
-              :to="'/fuck'"
+              :to="{path:'/storeListPage',query:{geohash:address.geohash,title:foodItem.title,restaurant_category_id:getCategoryId(foodItem.link)}}"
               v-for="foodItem in item"
               :key="foodItem.id"
               class="link_to_food"
@@ -95,6 +95,16 @@ export default {
     ...mapMutations(["SAVE_GEOHASH", "LOCATION"]),
     chooseCity() {
       this.$router.push({ path: "/home" });
+    },
+    getCategoryId(link) {
+      let urlData = decodeURIComponent(
+        link.split("=")[1].replace("&target_name", "")
+      );
+      if (/restaurant_category_id/gi.test(urlData)) {
+        return JSON.parse(urlData).restaurant_category_id.id;
+      } else {
+        return "";
+      }
     }
   }
 };
