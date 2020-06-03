@@ -42,10 +42,11 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../style/mixin.scss";
 #head_layout {
-  // position: absolute;
+  position: fixed;
+  z-index: 99;
   display: flex;
   flex-direction: row;
   align-items: center;

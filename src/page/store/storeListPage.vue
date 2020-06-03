@@ -1,6 +1,6 @@
 <template>
   <div>
-    <head-top :title="headeTitle" goBack="true"></head-top>
+    <head-top :style="{zIndex:20}" :title="headeTitle" goBack="true"></head-top>
     <type-selected
       :foodInitName="headeTitle"
       :latitude="latitude"
@@ -13,6 +13,7 @@
 import typeSelected from "src/components/common/typeSelected";
 import { mapState, mapMutations } from "vuex";
 import { msiteAddress } from "src/service/getData";
+import storeList from "src/components/common/storeList.vue";
 export default {
   data() {
     return {
@@ -40,10 +41,11 @@ export default {
     ...mapState(["latitude", "longitude"])
   },
   components: {
-    typeSelected
+    typeSelected,
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import "../../style/mixin.scss";
 </style>
