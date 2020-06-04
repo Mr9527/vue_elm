@@ -37,7 +37,7 @@
       <header class="store_header">
         <span class="store_List_header">—— 推荐商家 ——</span>
       </header>
-      <store-list class="sxxxx" v-if="geohashState" :geohash="address.geohash"></store-list>
+      <store-list v-if="geohashState" :geohash="address.geohash"></store-list>
     </div>
   </div>
 </template>
@@ -62,13 +62,14 @@ export default {
   async beforeMount() {
     let geohash = this.$route.query.geohash;
     if (!geohash) {
-      this.address = await cityGuess();
-    } else {
-      this.address = await msiteAddress(geohash);
+      let location = await cityGuess();
+      geohash = location.latitude = "," + location.longitude;
     }
+    let res = await msiteAddress(geohash);
     this.geohashState = true;
+    this.address = res;
     this.SAVE_GEOHASH(geohash);
-    this.LOCATION(this.address);
+    this.LOCATION(res);
   },
   mounted() {
     msiteFoodTypes(this.geohash)
@@ -115,6 +116,7 @@ export default {
   display: flex;
 }
 .msite_nav {
+  margin-top: 2rem;
   padding-top: 0.5rem;
   background-color: #fff;
   height: 6rem;

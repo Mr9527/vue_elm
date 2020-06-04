@@ -9,7 +9,9 @@
         @click="chooseType(item)"
       >
         <div class="filter_tab_border">
-          <span :class="{choose_title: currentSort == item}">{{foodType.name}}</span>
+          <span
+            :class="{choose_title: currentSort == item}"
+          >{{index==0&& currentSort != item&&foodType.name?foodType.name:item}}</span>
           <svg
             width="10"
             height="10"
@@ -30,7 +32,7 @@
               class="food_type_item"
               v-for="(item,index) in foodType.typeList"
               :key="item.id"
-              :class="{category_active:foodType.id==item.id}"
+              :class="{category_active:foodType.groupId==item.id}"
               @click="selectCategory(item.id,index)"
             >
               <section class="title_label">
@@ -60,7 +62,7 @@
               v-show="index"
               :key="item.id"
               :style="{backgroundColor:'#fff'}"
-              :class="{category_food_active:(foodType.id==item.id)||(!foodType.id&&index)}"
+              :class="{category_food_active:(foodType.childId==item.id)||(!foodType.childId&&index==0)}"
               @click="selectFood(item.id,item.name)"
             >
               <div class="food_type_detail_item">
@@ -165,7 +167,8 @@ export default {
       currentSort: "",
       foodType: {
         name: "",
-        id: "",
+        groupId: "",
+        childId: "",
         typeList: [],
         detailByTypeList: []
       },
@@ -207,10 +210,10 @@ export default {
     async initData() {
       let food = this.foodType;
       food.name = this.foodInitName;
-      food.id = this.normal_category_id;
+      food.groupId = this.normal_category_id;
       food.typeList = await foodCategory(this.latitude, this.longitude);
       food.typeList.forEach(item => {
-        if (food.id == item.id) {
+        if (food.groupId == item.id) {
           food.detailByTypeList = item.sub_categories;
         }
       });
@@ -229,26 +232,27 @@ export default {
     },
     selectCategory(id, index) {
       if (index === 0) {
-        this.foodType.id = null;
+        this.foodType.groupId = null;
         this.currentSort = "";
+        this.foodType.name = "";
       } else {
-        this.foodType.id = id;
+        this.foodType.groupId = id;
         this.foodType.detailByTypeList = this.foodType.typeList[
           index
         ].sub_categories;
       }
-      this.$emit("selectCategory", this.foodType.id, this.foodType.name);
+      // this.$emit("selectCategory", this.foodType.groupId, this.foodType.name);
     },
     selectFood(id, name) {
-      this.foodType.id = id;
+      this.foodType.childId = id;
       this.foodType.name = name;
       this.currentSort = "";
-      this.$emit("selectCategory", this.foodType.id, this.foodType.name);
+      this.$emit("foodType", id);
     },
     selectSort(id) {
       this.sortType.id = id;
       this.currentSort = "";
-      this.$emit("selectSort", id);
+      this.$emit("sortType", id);
     },
     chooseType(type) {
       if (this.currentSort == type) {
@@ -287,7 +291,7 @@ export default {
     }
   },
   mixins: [getImgPath],
-  props: ["latitude", "longitude", "normal_category_id", "foodInitName"]
+  props: ["latitude", "longitude", "normalCategoryId", "foodInitName"]
 };
 </script>
 
@@ -384,7 +388,6 @@ export default {
   flex-direction: row;
   width: 100%;
   position: absolute;
-  height: 13.5rem;
   top: 1.95rem;
   background-color: #fff;
   border-top: 0.025rem solid $bc;

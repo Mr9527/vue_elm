@@ -5,8 +5,9 @@
     @touchstart="touchStart($event)"
     @touchmove="touchMove($event)"
     @touchend="touchEnd($event)"
-    @scroll="(onInfinite || infiniteLoading) ? onScroll($event) : undefined"
   >
+    <!-- @scroll="(onInfinite || infiniteLoading) ? onScroll($event) : undefined" -->
+
     <section class="inner" :style="{ transform: 'translate3d(0, ' + top + 'px, 0)' }">
       <header class="pull-refresh">
         <slot name="pull-refresh">
@@ -67,7 +68,7 @@ export default {
       event => {
         scrollCheck(event);
       },
-      false
+      true
     );
   },
   methods: {
