@@ -3,12 +3,7 @@
     <!-- <pull-to-refresh :on-refresh="initital" :on-infinite="onInfinite"> -->
     <div slot="list">
       <ul class="store_list" v-if="storeList.length" type="1">
-        <router-link
-          tag="li"
-          :to="{paht:'/store',query:{geohash,id:item.id}}"
-          v-for="item in storeList"
-          :key="item.id"
-        >
+        <li @click="itemTap(item.id)" v-for="item in storeList" :key="item.id">
           <section class="store_item">
             <img class="store_item_img" :src="imgBaseUrl+item.image_path" />
             <section class="store_item_content">
@@ -99,7 +94,7 @@
               </section>
             </section>
           </section>
-        </router-link>
+        </li>
       </ul>
       <ul v-else class="animation_opactiy">
         <li v-for="item  in 10" :key="item" class="list_empty_li">
@@ -162,7 +157,7 @@ export default {
     supportIds: {
       type: Array,
       required: false
-    },
+    }
   },
   computed: {
     ...mapState(["latitude", "longitude"])
@@ -217,6 +212,12 @@ export default {
     backTop() {
       animate(document.body, { scrollTop: "0" }, 400, "ease-out");
       animate(document.documentElement, { scrollTop: "0" }, 400, "ease-out");
+    },
+    itemTap(id) {
+      this.$router.push({
+        path: "/store",
+        query: { geohash: this.geohash, id: id }
+      });
     },
     hideLoading() {
       this.showLoading = false;
@@ -393,5 +394,13 @@ export default {
 .store_list_container {
   flex-grow: 0;
   flex-shrink: 1;
+}
+.loading-enter-active,
+.loading-leave-active {
+  transition: opacity 1s;
+}
+.loading-enter,
+.loading-leave-active {
+  opacity: 0;
 }
 </style>

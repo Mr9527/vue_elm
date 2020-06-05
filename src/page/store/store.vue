@@ -1,14 +1,432 @@
 <template>
-    <div>
-        
-    </div>
+  <div ref="storeLayout" class="sotre-layout" @scroll="onScroll($event)">
+    <!-- <div> -->
+    <section v-show="!showLoading">
+      <header class="header-container">
+        <div ref="bar" class="header-tools">
+          <section class="nav-style" @click="$router.go(-1)">
+            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
+              <polyline
+                points="12,18 4,9 12,0"
+                style="fill:none;stroke:rgb(255,255,255);stroke-width:2"
+              />
+            </svg>
+          </section>
+        </div>
+        <div class="header-content">
+          <img class="header-background" :src="storeInfo.img" />
+          <div class="header-img-container">
+            <img class="header-img" :src="storeInfo.img" />
+          </div>
+          <div class="store-title">{{storeInfo.name}}</div>
+          <div class="store-simple-info-layout">
+            <span>{{storeInfo.grade}}</span>
+            <div class="vertical-line"></div>
+            <span>{{storeInfo.monthSalesVolume}}</span>
+            <div class="vertical-line"></div>
+            <span>{{storeInfo.deliveryTime}}</span>
+          </div>
+          <section class="index_activities" v-if="supports.length>0">
+            <div class="index_activities_list">
+              <div
+                class="index_activities_item"
+                v-for="storeTag in supports"
+                :key="storeTag.id"
+                v-show="storeTag.isShow"
+              >
+                <!-- v-show="index<2||item.id==isShowDetial" -->
+
+                <!-- v-show="index>1&&item.id==isShowDetial?'index_activities_item_hide':''" -->
+
+                <span
+                  class="index_activities_item_tag"
+                  :style="{
+                    backgroundColor:'#'+storeTag.icon_color,
+                   padding:'0.1rem'}"
+                >{{storeTag.icon_name}}</span>
+                <span class="index_activities_item_dsc">{{storeTag.description}}</span>
+              </div>
+            </div>
+            <div class="activities_open" v-on:click.stop="switchActivitiesLayout()">
+              <span>{{supports.length}}个活动</span>
+              <img src="../../images/detail_tag.svg" />
+            </div>
+          </section>
+        </div>
+      </header>
+      <div class="store-content-layout">
+        <section class="tab-layout" ref="tabLayout">
+          <div class="tab" :class="{choose_tab:chooseTabIndex==0}" @click="changedTab(0)">
+            <span>商品</span>
+            <div></div>
+          </div>
+          <div class="tab" :class="{choose_tab:chooseTabIndex==1}" @click="changedTab(1)">
+            <span>评价</span>
+            <div></div>
+          </div>
+        </section>
+        <section class="commodity-layout">
+          <section class="commdity-type-container" ref="wrapperMenu">
+            <ul class="commodity-type-list">
+              <li v-for="(item,index) in menuList" :key="index">
+                <span>{{ item.name }}</span>
+              </li>
+            </ul>
+          </section>
+          <section class="commdity-container" ref="menuFoodList">
+            <ul class="commdity-list">
+              <li v-for="(item,index) in menuList" :key="index">
+                <section>
+                  <header>
+                    <span>{{item.name}}</span>
+                  </header>
+                  <div>
+                    <section
+                      v-for="commodity in item.foods"
+                      :key="commodity.id"
+                    >{{ commodity.name }}</section>
+                  </div>
+                </section>
+              </li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </section>
+    <transition name="loading">
+      <loading v-show="showLoading"></loading>
+    </transition>
+  </div>
 </template>
 <script>
+import loading from "src/components/common/loading";
+import {
+  msiteAddress,
+  shopDetails,
+  foodMenu,
+  getRatingList,
+  ratingScores,
+  ratingTags
+} from "src/service/getData";
+import { mapState, mapMutations } from "vuex";
+import ratingStar from "src/components/common/ratingStar";
+import { imgBaseUrl } from "src/config/env";
+import BScroll from "better-scroll";
+
 export default {
-    
-}
+  data() {
+    return {
+      geohash: "",
+      storeId: null,
+      showLoading: false,
+      chooseTabIndex: 0,
+      storeInfo: {
+        img: "",
+        name: "正新鸡排（雅园新城店）",
+        grade: "评价4.5",
+        monthSalesVolume: "月售4444",
+        deliveryTime: "蜂鸟快递约40分钟"
+      },
+      supports: [],
+      storeDetailInfo: null,
+      menuList: null,
+      foodScroll: null, //食品列表scroll
+      shopListTop: [] //商品列表的高度集合
+    };
+  },
+  created() {
+    this.geohash = this.$route.query.geohash;
+    this.storeId = this.$route.query.id;
+  },
+  mounted() {
+    console.log("初始化");
+    this.initial();
+  },
+  methods: {
+    ...mapMutations(["LOCATION"]),
+    async initial() {
+      if (!this.latitude) {
+        let res = await msiteAddress(this.geohash);
+        this.LOCATION(res);
+      }
+
+      this.storeDetailInfo = await shopDetails(
+        this.storeId,
+        this.latitude,
+        this.longitude
+      );
+      // 装配商家信息
+      this.storeInfo = {
+        img: imgBaseUrl + this.storeDetailInfo.image_path,
+        name: this.storeDetailInfo.name,
+        grade: "评价" + this.storeDetailInfo.rating,
+        monthSalesVolume: "月售" + this.storeDetailInfo.recent_order_num,
+        deliveryTime:
+          this.storeDetailInfo.delivery_mode.text +
+          "约" +
+          this.storeDetailInfo.float_minimum_order_amount +
+          "分钟"
+      };
+      // 装配活动信息
+      let supports = [...this.storeDetailInfo.supports];
+      supports.forEach((item, index) => {
+        item.isShow = index <= 0;
+      });
+      this.supports = supports;
+
+      //获取商铺食品列表
+      this.menuList = await foodMenu(this.storeId);
+    },
+    onScroll(event) {
+      let storeLayout = this.$refs.storeLayout;
+      let tabLayout = this.$refs.tabLayout;
+      let toolbar = this.$refs.bar;
+      var scrollTop = storeLayout.scrollTop;
+      if (scrollTop >= toolbar.offsetTop + tabLayout.offsetTop) {
+        tabLayout.style.position = "fixed";
+        tabLayout.style.top = "2rem";
+      } else {
+        tabLayout.style.position = "relative";
+        tabLayout.style.top = 0;
+      }
+    },
+    changedTab(index) {
+      this.chooseTabIndex = index;
+    },
+    switchActivitiesLayout() {
+      this.supports.forEach((item, index) => {
+        if (index >= 1) {
+          item.isShow = !item.isShow;
+        }
+      });
+      this.supports = [...this.supports];
+    },
+    getFoodListHeight() {
+      const listContainer = this.$refs.menuFoodList;
+      if (listContainer) {
+        const listArr = Array.from(listContainer.children[0].children);
+        listArr.forEach((item, index) => {
+          this.shopListTop[index] = item.offsetTop;
+        });
+        this.listenScroll(listContainer);
+      }
+    },
+    listenScroll(element) {
+      this.foodScroll = new BScroll(element, {
+        probeType: 3,
+        deceleration: 0.001,
+        bounce: false,
+        swipeTime: 2000,
+        click: true
+      });
+
+      const wrapperMenu = new BScroll("#wrapper_menu", {
+        click: true
+      });
+
+      const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
+      this.foodScroll.on("scroll", pos => {
+        if (!this.$refs.wrapperMenu) {
+          return;
+        }
+        this.shopListTop.forEach((item, index) => {
+          if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
+            this.menuIndex = index;
+            const menuList = this.$refs.wrapperMenu.querySelectorAll(
+              ".activity_menu"
+            );
+            const el = menuList[0];
+            wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight / 2 - 50));
+          }
+        });
+      });
+    }
+  },
+  watch: {
+    //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
+    showLoading: function(value) {
+      if (!value) {
+        this.$nextTick(() => {
+          this.getFoodListHeight();
+        });
+      }
+    }
+  },
+  computed: {
+    ...mapState(["latitude", "longitude", "cartList"])
+  },
+  components: {
+    loading
+  }
+};
 </script>
 
 <style lang="scss">
-    
+@import "../../style/mixin.scss";
+.header-container {
+  background: #fff;
+}
+.header-tools {
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 2rem;
+  background: #333;
+  position: fixed;
+  top: 0;
+  .nav-style {
+    margin-left: 0.4rem;
+    overflow: hidden;
+  }
+}
+.header-content {
+  z-index: 10;
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}
+.header-img-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.header-img {
+  margin-top: 1rem;
+  z-index: 9;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+.header-background {
+  z-index: 8.9;
+  @include cl;
+  width: 100%;
+  height: 4rem;
+  filter: blur(2px);
+}
+.store-title {
+  width: 100%;
+  text-align: center;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.store-simple-info-layout {
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & > span {
+    @include sc(0.4rem, #666);
+  }
+  .vertical-line {
+    margin: 0 0.2rem 0 0.2rem;
+    height: 0.3rem;
+    border: $line solid 1px;
+  }
+}
+.tab-layout {
+  position: relative;
+  background: #fff;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  width: 100%;
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    width: 50%;
+    text-align: center;
+  }
+}
+.choose_tab {
+  & > span {
+    color: $blue;
+  }
+  & > div {
+    width: 2rem;
+    height: 0.1rem;
+    border-bottom: $blue solid 3px;
+  }
+}
+.commodity-layout {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.index_activities {
+  padding-left: 1rem;
+  display: flex;
+  overflow: hidden;
+}
+.index_activities_list {
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.index_activities_item {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+.index_activities_item_tag {
+  color: #fff;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.3rem;
+  border-radius: 0.1rem;
+  margin-right: 0.2rem;
+}
+.index_activities_item_dsc {
+  color: #666;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.index_activities_item_hide {
+  display: none;
+}
+.activities_open {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  margin-right: 0.4rem;
+  justify-content: center;
+  align-items: flex-start;
+  display: flex;
+  span {
+    color: #999;
+    font-size: 0.36667rem;
+  }
+  img {
+    margin-left: 0.2rem;
+    margin-top: 0.2rem;
+    @include wh(0.3rem, 0.15rem);
+    fill: #999;
+  }
+}
+.loading-enter-active,
+.loading-leave-active {
+  transition: opacity 1s;
+}
+.loading-enter,
+.loading-leave-active {
+  opacity: 0;
+}
+.sotre-layout {
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
 </style>
