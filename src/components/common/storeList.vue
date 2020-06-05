@@ -163,16 +163,10 @@ export default {
       type: Array,
       required: false
     },
-    longitude: {
-      type: String,
-      required: true
-    },
-    latitude: {
-      type: String,
-      required: true
-    }
   },
-  computed: {},
+  computed: {
+    ...mapState(["latitude", "longitude"])
+  },
   mounted() {
     this.initital();
   },

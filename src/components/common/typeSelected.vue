@@ -192,6 +192,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["latitude", "longitude"]),
     storeTypeCount: function() {
       let count = 0;
       this.storeType.tmpDeliverys.forEach(item => {
@@ -278,20 +279,26 @@ export default {
       });
     },
     sureStoreFilter() {
+      let deliverys = [];
+      let activites = [];
       this.storeType.activites.forEach((item, index) => {
         item.isSelect = this.storeType.tmpActivites[index].isSelect;
+        if (item.isSelect) {
+          activites.push(item);
+        }
       });
-      this.$emit("activities", this.storeType.activites);
-
       this.storeType.deliverys.forEach((item, index) => {
         item.isSelect = this.storeType.tmpDeliverys[index].isSelect;
+        if (item.isSelect) {
+          deliverys.push(item);
+        }
       });
-      this.$emit("deliverys", this.storeType.deliverys);
       this.currentSort = "";
+      this.$emit("activities", deliverys, activites);
     }
   },
   mixins: [getImgPath],
-  props: ["latitude", "longitude", "normalCategoryId", "foodInitName"]
+  props: ["normalCategoryId", "foodInitName"]
 };
 </script>
 

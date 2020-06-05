@@ -3,20 +3,19 @@
     <head-top :style="{zIndex:20}" :title="headeTitle" goBack="true"></head-top>
     <type-selected
       :foodInitName="headeTitle"
-      :latitude="latitude"
-      :longitude="longitude"
       :normalCategoryId="restaurant_category_id"
       @foodType="switchFoodType"
+      @sortType="sortByType"
+      @activities="chooseActivities"
     ></type-selected>
     <store-list
       class="store-list-container"
       :geohash="geohash"
-      :latitude="latitude"
-      :longitude="longitude"
       :restaurantCategoryIds="restaurant_category_ids"
       :restaurantCategoryId="restaurant_category_id"
       :sortType="sortType"
       :supportIds="activities"
+      :deliveryMode="deliveryMode"
     ></store-list>
   </div>
 </template>
@@ -33,7 +32,8 @@ export default {
       restaurant_category_id: null,
       restaurant_category_ids: null,
       sortType: null,
-      activities: []
+      activities: [],
+      deliveryMode: null
     };
   },
   created() {
@@ -54,6 +54,15 @@ export default {
     },
     switchFoodType(id) {
       this.restaurant_category_ids = id;
+    },
+    sortByType(id) {
+      this.sortType = id;
+    },
+    chooseActivities(deliverys, activities) {
+      if (deliverys[0] != null && deliverys[0].isSelect) {
+        this.deliveryMode = deliverys[0].id;
+      } else [(this.deliveryMode = null)];
+      this.activities = [...activities];
     }
   },
   computed: {
