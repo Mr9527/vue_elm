@@ -28,7 +28,6 @@ const storeListPage = (r) =>
   require.ensure([], () => r(require("../page/store/storeListPage")), "storeListPage");
 
 
-
 export default [{
   path: "/",
   component: App, //顶层路由，对应index.html

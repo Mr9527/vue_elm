@@ -66,7 +66,7 @@
           </div>
         </section>
         <section class="commodity-layout">
-          <section class="commdity-type-container" ref="wrapperMenu">
+          <section class="commdity-type-container" ref="wrapperMenu" id="wrapper_menu">
             <ul class="commodity-type-list">
               <li v-for="(item,index) in menuList" :key="index">
                 <span>{{ item.name }}</span>
@@ -118,7 +118,7 @@ export default {
     return {
       geohash: "",
       storeId: null,
-      showLoading: false,
+      showLoading: true,
       chooseTabIndex: 0,
       storeInfo: {
         img: "",
@@ -176,6 +176,8 @@ export default {
 
       //获取商铺食品列表
       this.menuList = await foodMenu(this.storeId);
+
+      this.showLoading = false;
     },
     onScroll(event) {
       let storeLayout = this.$refs.storeLayout;
@@ -204,7 +206,10 @@ export default {
     getFoodListHeight() {
       const listContainer = this.$refs.menuFoodList;
       if (listContainer) {
-        const listArr = Array.from(listContainer.children[0].children);
+        let li = listContainer.children[0].children[0];
+        let itemSection = li.children[0];
+        let liChildrens = itemSection.children[1];
+        const listArr = Array.from(liChildrens.children);
         listArr.forEach((item, index) => {
           this.shopListTop[index] = item.offsetTop;
         });
@@ -264,6 +269,9 @@ export default {
 <style lang="scss">
 @import "../../style/mixin.scss";
 .header-container {
+  // z-index: 10;
+  // width: 100%;
+  // position: fixed;
   background: #fff;
 }
 .header-tools {
