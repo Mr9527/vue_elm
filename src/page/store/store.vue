@@ -2,7 +2,7 @@
   <div ref="storeLayout" class="sotre-layout" @scroll="onScroll($event)">
     <!-- <div> -->
     <section v-show="!showLoading">
-      <header class="header-container">
+      <header ref="headerLayout" class="header-container">
         <div ref="bar" class="header-tools">
           <section class="nav-style" @click="$router.go(-1)">
             <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -54,44 +54,78 @@
           </section>
         </div>
       </header>
-      <div class="store-content-layout">
-        <section class="tab-layout" ref="tabLayout">
-          <div class="tab" :class="{choose_tab:chooseTabIndex==0}" @click="changedTab(0)">
-            <span>商品</span>
-            <div></div>
-          </div>
-          <div class="tab" :class="{choose_tab:chooseTabIndex==1}" @click="changedTab(1)">
-            <span>评价</span>
-            <div></div>
-          </div>
-        </section>
-        <section class="commodity-layout">
-          <section class="commdity-type-container" ref="wrapperMenu" id="wrapper_menu">
+      <section class="tab-layout" ref="tabLayout">
+        <div class="tab" :class="{choose_tab:chooseTabIndex==0}" @click="changedTab(0)">
+          <span>商品</span>
+          <div></div>
+        </div>
+        <div class="tab" :class="{choose_tab:chooseTabIndex==1}" @click="changedTab(1)">
+          <span>评价</span>
+          <div></div>
+        </div>
+      </section>
+
+      <transition-group tag="div" name="siwtch_tab">
+        <section class="commodity-layout" key="0" v-show="chooseTabIndex==0">
+          <section class="commodity-type-container" ref="wrapperMenu" id="wrapper_menu">
             <ul class="commodity-type-list">
-              <li v-for="(item,index) in menuList" :key="index">
-                <span>{{ item.name }}</span>
+              <li v-for="(item,index) in menuList" :key="index" @click="chooseMenu(index) ">
+                <div
+                  :class="{selectedCommodityTypeListItem:menuIndex==index}"
+                  class="commodity-type-list-item"
+                >{{ item.name }}</div>
               </li>
             </ul>
           </section>
-          <section class="commdity-container" ref="menuFoodList">
-            <ul class="commdity-list">
+          <section class="commodity-container" ref="menuFoodList">
+            <ul class="commodity-list">
               <li v-for="(item,index) in menuList" :key="index">
                 <section>
-                  <header>
-                    <span>{{item.name}}</span>
+                  <header class="commodity-type-header">
+                    <strong>{{item.name}}</strong>
+                    <span>{{item.description}}</span>
                   </header>
                   <div>
                     <section
+                      class="commodity-item"
                       v-for="commodity in item.foods"
                       :key="commodity.id"
-                    >{{ commodity.name }}</section>
+                    >
+                      <div class="commodity-image-container">
+                        <p
+                          class="commodity-tag"
+                          :style="{backgroundColor:'#'+commodity.attributes[0].icon_color}"
+                          v-if="commodity.attributes.length>=1&&commodity.attributes[0]!=null"
+                        >{{commodity.attributes[0].icon_name}}</p>
+                        <img class="commodity-image" :src="imgBaseUrl+commodity.image_path" />
+                      </div>
+                      <div class="commodity-info-container">
+                        <strong>{{commodity.name}}</strong>
+                        <p class="commodity_description_sale_rating">
+                          <span>月售{{commodity.month_sales}}份</span>
+                          <span>好评率{{commodity.satisfy_rate}}%</span>
+                        </p>
+                        <p v-if="commodity.activity" class="commodity-activity">
+                          <span
+                            :style="{color:'#'+commodity.activity.image_text_color,borderColor:'#'+commodity.activity.icon_color}"
+                          >{{commodity.activity.image_text}}</span>
+                        </p>
+                        <div>
+                          <section class="commodity_price">
+                            <span>¥</span>
+                            <span>{{commodity.specfoods[0].price}}</span>
+                            <span v-if="commodity.specifications.length">起</span>
+                          </section>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </section>
               </li>
             </ul>
           </section>
         </section>
-      </div>
+      </transition-group>
     </section>
     <transition name="loading">
       <loading v-show="showLoading"></loading>
@@ -112,10 +146,12 @@ import { mapState, mapMutations } from "vuex";
 import ratingStar from "src/components/common/ratingStar";
 import { imgBaseUrl } from "src/config/env";
 import BScroll from "better-scroll";
+import { animate } from "src/config/mUtils";
 
 export default {
   data() {
     return {
+      imgBaseUrl: imgBaseUrl,
       geohash: "",
       storeId: null,
       showLoading: true,
@@ -131,7 +167,9 @@ export default {
       storeDetailInfo: null,
       menuList: null,
       foodScroll: null, //食品列表scroll
-      shopListTop: [] //商品列表的高度集合
+      shopListTop: [], //商品列表的高度集合
+      menuIndex: 0,
+      menuIndexChange: true
     };
   },
   created() {
@@ -206,45 +244,39 @@ export default {
     getFoodListHeight() {
       const listContainer = this.$refs.menuFoodList;
       if (listContainer) {
-        let li = listContainer.children[0].children[0];
-        let itemSection = li.children[0];
-        let liChildrens = itemSection.children[1];
-        const listArr = Array.from(liChildrens.children);
+        let li = listContainer.children[0];
+
+        const listArr = Array.from(li.children);
+        console.log(li);
         listArr.forEach((item, index) => {
-          this.shopListTop[index] = item.offsetTop;
+          let itemSection = item.children[0].children[0];
+          this.shopListTop[index] = itemSection;
         });
-        this.listenScroll(listContainer);
       }
     },
-    listenScroll(element) {
-      this.foodScroll = new BScroll(element, {
-        probeType: 3,
-        deceleration: 0.001,
-        bounce: false,
-        swipeTime: 2000,
-        click: true
-      });
-
-      const wrapperMenu = new BScroll("#wrapper_menu", {
-        click: true
-      });
-
-      const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
-      this.foodScroll.on("scroll", pos => {
-        if (!this.$refs.wrapperMenu) {
-          return;
-        }
-        this.shopListTop.forEach((item, index) => {
-          if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
-            this.menuIndex = index;
-            const menuList = this.$refs.wrapperMenu.querySelectorAll(
-              ".activity_menu"
-            );
-            const el = menuList[0];
-            wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight / 2 - 50));
-          }
-        });
-      });
+    //点击左侧食品列表标题，相应列表移动到最顶层
+    chooseMenu(index) {
+      this.menuIndex = index;
+      //menuIndexChange解决运动时listenScroll依然监听的bug
+      this.menuIndexChange = false;
+      let scrollHeight =
+        this.shopListTop[index].offsetTop +
+        this.$refs.headerLayout.offsetHeight -
+        this.$refs.bar.offsetHeight;
+      console.log("current scrollHeight:" + this.$refs.storeLayout.scrollTop);
+      console.log(" scrollHeight:" + scrollHeight);
+      animate(
+        this.$refs.storeLayout,
+        { scrollTop: scrollHeight },
+        400,
+        "ease-out"
+      );
+      // animate(
+      //   document.documentElement,
+      //   { scrollTop: scrollHeight },
+      //   400,
+      //   "ease-out"
+      // );
     }
   },
   watch: {
@@ -363,6 +395,7 @@ export default {
   }
 }
 .commodity-layout {
+  width: 100%;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -436,5 +469,108 @@ export default {
   height: 100%;
   width: 100%;
   position: absolute;
+}
+.commodity-type-container {
+  min-width: 3rem;
+}
+.commodity-type-list-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  background-color: #f1f1f1;
+  text-align: center;
+  @include sc(0.5rem, #666);
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
+.commodity-type-header {
+  background: #ffffff;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  strong {
+    font-size: 0.6rem;
+  }
+  span {
+    font-size: 0.4rem;
+    color: #999;
+    margin-left: 0.4rem;
+  }
+}
+.selectedCommodityTypeListItem {
+  background-color: #ffffff;
+  color: #333;
+}
+.commodity-container {
+  flex-grow: 1;
+}
+.commodity-item {
+  overflow: hidden;
+  display: flex;
+  background-color: #fff;
+  margin-bottom: 0.4rem;
+  border-bottom: $line solid 1px;
+}
+.commodity-list {
+  background-color: #fff;
+  padding-left: 0.4rem;
+}
+.commodity-image-container {
+  overflow: hidden;
+  position: relative;
+}
+.commodity-tag {
+  color: #fff;
+  font-size: 0.2rem;
+  width: 2rem;
+  height: 1.2rem;
+  padding-bottom: 0.1rem;
+  display: flex;
+  font-size: 0.4rem;
+  align-items: flex-end;
+  justify-content: center;
+  transform: rotate(-45deg) translate(-0.3rem, -0.7rem);
+  position: absolute;
+  border: none;
+  border-radius: 0;
+}
+.commodity-image {
+  @include wh(3rem, 3rem);
+  border-radius: 0.1rem;
+}
+.commodity-info-container {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.4rem;
+  strong:nth-of-type(1) {
+    font-size: 0.5rem;
+  }
+  .commodity_description_sale_rating {
+    display: flex;
+    margin-top: 0.2rem;
+    margin-bottom: 0.4rem;
+    span {
+      @include sc(0.4rem, rgb(26, 23, 23));
+    }
+  }
+  .commodity_price {
+    span {
+      color: #f60;
+      font-size: 0.5rem;
+      font-family: "Helvetica Neue", Tahoma, Arial;
+    }
+  }
+  .commodity-activity {
+    display: flex;
+    span {
+      padding: 0.05rem;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 0.1rem;
+      width: auto;
+      font-size: 0.2rem;
+    }
+  }
 }
 </style>
