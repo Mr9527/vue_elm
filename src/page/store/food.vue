@@ -1,14 +1,10 @@
 <template>
-    <div>
-        
-    </div>
+  <div></div>
 </template>
 <script>
-export default {
-    
-}
+import head from "src/components/common/head";
+export default {};
 </script>
 
 <style lang="scss">
-    
 </style>
