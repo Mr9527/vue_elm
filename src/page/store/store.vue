@@ -125,6 +125,12 @@
             </ul>
           </section>
         </section>
+        <store-evaluate
+          key="1"
+          v-if="storeDetailInfo!=null&&chooseTabIndex==1"
+          :storeId="storeId"
+          :storeInfo="storeDetailInfo"
+        ></store-evaluate>
       </transition-group>
     </section>
     <transition name="loading">
@@ -143,10 +149,10 @@ import {
   ratingTags
 } from "src/service/getData";
 import { mapState, mapMutations } from "vuex";
-import ratingStar from "src/components/common/ratingStar";
 import { imgBaseUrl } from "src/config/env";
 import BScroll from "better-scroll";
 import { animate } from "src/config/mUtils";
+import storeEvaluate from "src/page/store/storeEvaluate";
 
 export default {
   data() {
@@ -293,7 +299,8 @@ export default {
     ...mapState(["latitude", "longitude", "cartList"])
   },
   components: {
-    loading
+    loading,
+    storeEvaluate
   }
 };
 </script>
