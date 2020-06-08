@@ -65,7 +65,7 @@
         </div>
       </section>
 
-      <transition-group tag="div" name="siwtch_tab">
+      <transition-group tag="div" name="switch-tab">
         <section class="commodity-layout" key="0" v-show="chooseTabIndex==0">
           <section class="commodity-type-container" ref="wrapperMenu" id="wrapper_menu">
             <ul class="commodity-type-list">
@@ -79,14 +79,16 @@
           </section>
           <section class="commodity-container" ref="menuFoodList">
             <ul class="commodity-list">
-              <li v-for="(item,index) in menuList" :key="index">
+              <li tag="li" v-for="(item,index) in menuList" :key="index">
                 <section>
                   <header class="commodity-type-header">
                     <strong>{{item.name}}</strong>
                     <span>{{item.description}}</span>
                   </header>
                   <div>
-                    <section
+                    <router-link
+                      tag="section"
+                      :to="{path:'/food',query:{image:imgBaseUrl+commodity.image_path,commodity}}"
                       class="commodity-item"
                       v-for="commodity in item.foods"
                       :key="commodity.id"
@@ -118,7 +120,7 @@
                           </section>
                         </div>
                       </div>
-                    </section>
+                    </router-link>
                   </div>
                 </section>
               </li>
@@ -579,5 +581,16 @@ export default {
       font-size: 0.2rem;
     }
   }
+}
+.switch-tab-enter-active {
+  transition: all 0.2s ease-in;
+}
+.switch-tab-leave-active {
+  transition: all 0.2s ease-out;
+}
+.switch-tab-enter,
+.switch-tab-leave-to {
+  opacity: 0;
+  transform: (100%);
 }
 </style>

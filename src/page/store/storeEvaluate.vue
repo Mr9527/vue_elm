@@ -197,6 +197,7 @@ export default {
   background-color: #fff;
   display: flex;
   flex-direction: row;
+  padding-left: 0.4rem;
 }
 .user_evaluate_content {
   padding-left: 0.4rem;
