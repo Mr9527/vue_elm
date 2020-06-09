@@ -21,7 +21,9 @@ const personal_center = (r) =>
 const reset_password = (r) =>
   require.ensure([], () => r(require("../page/account/reset_password")), "reset_password");
 const food = (r) =>
-  require.ensure([], () => r(require("../page/store/food")), "food");
+  require.ensure([], () => r(require("../page/store/food/food")), "food");
+const foodDetail = (r) =>
+  require.ensure([], () => r(require("../page/store/foodDetail")), "foodDetail");
 const store = (r) =>
   require.ensure([], () => r(require("../page/store/store")), "store");
 const storeListPage = (r) =>
@@ -63,9 +65,18 @@ export default [{
     }, {
       path: "/store",
       component: store,
-    }, {
-      path: "/food",
-      component: food,
+      children: [{
+        path: "food",
+        component: food,
+        props: true
+      }, {
+        path: "foodDetail",
+        component: foodDetail,
+        props: {
+          default: true,
+          sidebar: false
+        }
+      }]
     }, {
       path: '/storeListPage',
       component: storeListPage

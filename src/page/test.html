@@ -4,19 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script src="https://unpkg.com/better-scroll/dist/bscroll.min.js"></script>
     <style>
       html,
       body {
-        height: 100%;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        height: 100%;
       }
-      .conl {
-        float: left;
-        position: relative;
-        bottom: 0;
-        height: auto;
-        overflow: auto;
+      .content {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+      .group {
+        overflow-y: auto;
       }
       /* .clearfix {
         overflow: auto;
@@ -24,109 +26,141 @@
     </style>
   </head>
   <body>
-    <div class="conl">
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-    </div>
-    <div id="fuck" class="conl">
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-      <li><a href="#youxuanbangdan">优选榜单</a></li>
-      <li><a href="#nvzhuang">女装</a></li>
-      <li><a href="#nanzhuang">男装</a></li>
-      <li><a href="#caizhuang">彩妆</a></li>
-      <li><a href="#nvshihuli">女士护理</a></li>
-      <li><a href="">视频</a></li>
-      <li><a href="">食品</a></li>
-      <li><a href="">女鞋</a></li>
-    </div>
+    <section>
+      <h1>标题</h1>
+      <h1>标题</h1>
+      <h1>标题</h1>
+      <h1>标题</h1>
+
+    </section>
+    <div class="content">
+      <div id="slide" class="group">
+        <ul class="conl">
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="dd">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+        </ul>
+      </div>
+      <div id="fuck" class="group">
+        <ul class="conl">
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="#youxuanbangdan">优选榜单</a></li>
+          <li><a href="#nvzhuang">女装</a></li>
+          <li><a href="#nanzhuang">男装</a></li>
+          <li><a href="#caizhuang">彩妆</a></li>
+          <li><a href="#nvshihuli">女士护理</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+          <li><a href="">视频</a></li>
+          <li><a href="">食品</a></li>
+          <li><a href="">女鞋</a></li>
+        </ul>
+      </div>
+    </section>
     <script>
-      let fuck = document.querySelector("#fuck");
-      fuck.style.height = window.innerHeight;
+      let wrapper = document.querySelector("#slide");
+      let scroll = new BScroll(wrapper);
+
+      let fuckElement=document.querySelector("#fuck");
+      let fuckScroll = new BScroll(fuckElement);
+
     </script>
   </body>
 </html>

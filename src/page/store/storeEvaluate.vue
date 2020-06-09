@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       evaluateList: [],
-      storeScores: null,
+      storeScores: {},
       evaluateTagList: [],
       evaluateOffset: 0,
       selectedTagId: ""

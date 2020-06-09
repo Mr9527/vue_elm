@@ -7,12 +7,20 @@ import {
 } from './config/env'
 import './config/rem'
 import components from './components/index'
+import FastClick from 'fastclick'
 
 Object.keys(components).forEach((key) => {
   let name = key.replace(/(\w)/, (v) => v.toUpperCase());
   Vue.component(`${name}`, components[key]);
 })
 
+if ('addEventListener' in document) {
+  document.addEventListener('DOMContentLoaded', function () {
+    FastClick.attach(document.body)
+  }, false)
+}
+
+Vue.config.devtools = true
 Vue.use(VueRouter)
 const router = new VueRouter({
   routes,

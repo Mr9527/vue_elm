@@ -1,7 +1,7 @@
 <template>
-  <div ref="storeLayout" class="sotre-layout" @scroll="onScroll($event)">
+  <div>
     <!-- <div> -->
-    <section v-show="!showLoading">
+    <section v-show="!showLoading" class="sotre-layout">
       <header ref="headerLayout" class="header-container">
         <div ref="bar" class="header-tools">
           <section class="nav-style" @click="$router.go(-1)">
@@ -64,12 +64,11 @@
           <div></div>
         </div>
       </section>
-
-      <transition-group tag="div" name="switch-tab">
+      <transition-group tag="div" name="switch-tab" class="transitionPage">
         <section class="commodity-layout" key="0" v-show="chooseTabIndex==0">
           <section class="commodity-type-container" ref="wrapperMenu" id="wrapper_menu">
             <ul class="commodity-type-list">
-              <li v-for="(item,index) in menuList" :key="index" @click="chooseMenu(index) ">
+              <li v-for="(item,index) in menuList" :key="index" @click.stop="chooseMenu(index) ">
                 <div
                   :class="{selectedCommodityTypeListItem:menuIndex==index}"
                   class="commodity-type-list-item"
@@ -88,9 +87,9 @@
                   <div>
                     <router-link
                       tag="section"
-                      :to="{path:'/food',query:{image:imgBaseUrl+commodity.image_path,commodity}}"
                       class="commodity-item"
                       v-for="commodity in item.foods"
+                      :to="{path:'/store/food',query:{image:commodity.image_path,name:commodity.name}}"
                       :key="commodity.id"
                     >
                       <div class="commodity-image-container">
@@ -137,6 +136,9 @@
     </section>
     <transition name="loading">
       <loading v-show="showLoading"></loading>
+    </transition>
+    <transition name="router-slid" mode="out-in">
+      <router-view></router-view>
     </transition>
   </div>
 </template>
@@ -208,10 +210,8 @@ export default {
         grade: "评价" + this.storeDetailInfo.rating,
         monthSalesVolume: "月售" + this.storeDetailInfo.recent_order_num,
         deliveryTime:
-          this.storeDetailInfo.delivery_mode.text +
-          "约" +
-          this.storeDetailInfo.float_minimum_order_amount +
-          "分钟"
+          // this.storeDetailInfo.delivery_mode.text +
+          "约" + this.storeDetailInfo.float_minimum_order_amount + "分钟"
       };
       // 装配活动信息
       let supports = [...this.storeDetailInfo.supports];
@@ -253,17 +253,29 @@ export default {
       const listContainer = this.$refs.menuFoodList;
       if (listContainer) {
         let li = listContainer.children[0];
-
         const listArr = Array.from(li.children);
         console.log(li);
         listArr.forEach((item, index) => {
           let itemSection = item.children[0].children[0];
           this.shopListTop[index] = itemSection;
         });
+        this.listenerScroll();
       }
+    },
+    listenerScroll() {
+      this.foodScroll = new BScroll(this.$refs.menuFoodList, {
+        bounce: false,
+        click: false
+      });
+      // const wrapperMenu = new BScroll("#wrapper_menu", {
+      //   click: true
+      // });
     },
     //点击左侧食品列表标题，相应列表移动到最顶层
     chooseMenu(index) {
+      if (this.menuIndex == index) {
+        return;
+      }
       this.menuIndex = index;
       //menuIndexChange解决运动时listenScroll依然监听的bug
       this.menuIndexChange = false;
@@ -271,20 +283,15 @@ export default {
         this.shopListTop[index].offsetTop +
         this.$refs.headerLayout.offsetHeight -
         this.$refs.bar.offsetHeight;
-      console.log("current scrollHeight:" + this.$refs.storeLayout.scrollTop);
-      console.log(" scrollHeight:" + scrollHeight);
-      animate(
-        this.$refs.storeLayout,
-        { scrollTop: scrollHeight },
-        400,
-        "ease-out"
-      );
+      // console.log("current scrollHeight:" + this.$refs.storeLayout.scrollTop);
+      // console.log(" scrollHeight:" + scrollHeight);
       // animate(
-      //   document.documentElement,
+      //   this.$refs.storeLayout,
       //   { scrollTop: scrollHeight },
       //   400,
       //   "ease-out"
       // );
+      this.foodScroll.scrollTo(0, -100, 400);
     }
   },
   watch: {
@@ -403,12 +410,6 @@ export default {
     border-bottom: $blue solid 3px;
   }
 }
-.commodity-layout {
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: row;
-}
 
 .index_activities {
   padding-left: 1rem;
@@ -474,14 +475,14 @@ export default {
   opacity: 0;
 }
 .sotre-layout {
-  overflow: auto;
-  height: 100%;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   position: absolute;
+  right: 0;
+  left: 0;
+  height: 100%;
 }
-.commodity-type-container {
-  min-width: 3rem;
-}
+
 .commodity-type-list-item {
   display: flex;
   justify-content: center;
@@ -512,7 +513,9 @@ export default {
   color: #333;
 }
 .commodity-container {
-  flex-grow: 1;
+  display: flex;
+  padding-bottom: 2rem;
+  overflow: auto;
 }
 .commodity-item {
   overflow: hidden;
@@ -592,5 +595,20 @@ export default {
 .switch-tab-leave-to {
   opacity: 0;
   transform: (100%);
+}
+.transitionPage {
+  display: flex;
+  overflow: hidden;
+}
+.commodity-type-container {
+  display: flex;
+  overflow-y: auto;
+  position: relative;
+}
+.commodity-layout {
+  display: flex;
+  flex: 1;
+  padding-bottom: 2rem;
+  overflow: auto;
 }
 </style>
