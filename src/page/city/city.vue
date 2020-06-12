@@ -101,7 +101,7 @@ export default {
       }
       setStore("placeHistory", this.historyList);
       console.log(this.historyList);
-      this.$router.push({ path: "/miste", query: { geohash } });
+      this.$router.push({ path: "/msite", query: { geohash } });
     },
     clearHistory() {
       removeStore("placeHistory");

@@ -166,8 +166,4 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.sxxxx {
-  flex-grow: 0;
-  flex-shrink: 1;
-}
 </style>

@@ -1,8 +1,7 @@
 <template>
-  <div>
+  <div class="commodity-container" ref="menuFoodList">
     <!-- <div> -->
-    <section v-show="!showLoading" class="sotre-layout">
-      <header ref="headerLayout" class="header-container">
+    <!-- <header ref="headerLayout" class="header-container">
         <div ref="bar" class="header-tools">
           <section class="nav-style" @click="$router.go(-1)">
             <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -34,10 +33,6 @@
                 :key="storeTag.id"
                 v-show="storeTag.isShow"
               >
-                <!-- v-show="index<2||item.id==isShowDetial" -->
-
-                <!-- v-show="index>1&&item.id==isShowDetial?'index_activities_item_hide':''" -->
-
                 <span
                   class="index_activities_item_tag"
                   :style="{
@@ -53,8 +48,8 @@
             </div>
           </section>
         </div>
-      </header>
-      <section class="tab-layout" ref="tabLayout">
+    </header>-->
+    <!-- <section class="tab-layout" ref="tabLayout">
         <div class="tab" :class="{choose_tab:chooseTabIndex==0}" @click="changedTab(0)">
           <span>商品</span>
           <div></div>
@@ -63,83 +58,195 @@
           <span>评价</span>
           <div></div>
         </div>
-      </section>
-      <transition-group tag="div" name="switch-tab" class="transitionPage">
-        <section class="commodity-layout" key="0" v-show="chooseTabIndex==0">
-          <section class="commodity-type-container" ref="wrapperMenu" id="wrapper_menu">
-            <ul class="commodity-type-list">
-              <li v-for="(item,index) in menuList" :key="index" @click.stop="chooseMenu(index) ">
-                <div
-                  :class="{selectedCommodityTypeListItem:menuIndex==index}"
-                  class="commodity-type-list-item"
-                >{{ item.name }}</div>
-              </li>
-            </ul>
-          </section>
-          <section class="commodity-container" ref="menuFoodList">
-            <ul class="commodity-list">
-              <li tag="li" v-for="(item,index) in menuList" :key="index">
-                <section>
-                  <header class="commodity-type-header">
-                    <strong>{{item.name}}</strong>
-                    <span>{{item.description}}</span>
-                  </header>
-                  <div>
-                    <router-link
-                      tag="section"
-                      class="commodity-item"
-                      v-for="commodity in item.foods"
-                      :to="{path:'/store/food',query:{image:commodity.image_path,name:commodity.name}}"
-                      :key="commodity.id"
-                    >
-                      <div class="commodity-image-container">
-                        <p
-                          class="commodity-tag"
-                          :style="{backgroundColor:'#'+commodity.attributes[0].icon_color}"
-                          v-if="commodity.attributes.length>=1&&commodity.attributes[0]!=null"
-                        >{{commodity.attributes[0].icon_name}}</p>
-                        <img class="commodity-image" :src="imgBaseUrl+commodity.image_path" />
-                      </div>
-                      <div class="commodity-info-container">
-                        <strong>{{commodity.name}}</strong>
-                        <p class="commodity_description_sale_rating">
-                          <span>月售{{commodity.month_sales}}份</span>
-                          <span>好评率{{commodity.satisfy_rate}}%</span>
-                        </p>
-                        <p v-if="commodity.activity" class="commodity-activity">
-                          <span
-                            :style="{color:'#'+commodity.activity.image_text_color,borderColor:'#'+commodity.activity.icon_color}"
-                          >{{commodity.activity.image_text}}</span>
-                        </p>
-                        <div>
-                          <section class="commodity_price">
-                            <span>¥</span>
-                            <span>{{commodity.specfoods[0].price}}</span>
-                            <span v-if="commodity.specifications.length">起</span>
-                          </section>
-                        </div>
-                      </div>
-                    </router-link>
+    </section>-->
+    <ul class="commodity-list">
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <li>
+        <div>aaaaaaaaaaaa</div>
+      </li>
+      <!-- <li tag="li" v-for="(item,index) in menuList" :key="index">
+            <section>
+              <header class="commodity-type-header">
+                <strong>{{item.name}}</strong>
+                <span>{{item.description}}</span>
+              </header>
+              <div>
+                <div class="commodity-item" v-for="commodity in item.foods" :key="commodity.id">
+                  <div class="commodity-image-container">
+                    <p
+                      class="commodity-tag"
+                      :style="{backgroundColor:'#'+commodity.attributes[0].icon_color}"
+                      v-if="commodity.attributes.length>=1&&commodity.attributes[0]!=null"
+                    >{{commodity.attributes[0].icon_name}}</p>
+                    <img class="commodity-image" :src="imgBaseUrl+commodity.image_path" />
                   </div>
-                </section>
-              </li>
-            </ul>
-          </section>
-        </section>
-        <store-evaluate
-          key="1"
-          v-if="storeDetailInfo!=null&&chooseTabIndex==1"
-          :storeId="storeId"
-          :storeInfo="storeDetailInfo"
-        ></store-evaluate>
-      </transition-group>
-    </section>
-    <transition name="loading">
-      <loading v-show="showLoading"></loading>
-    </transition>
-    <transition name="router-slid" mode="out-in">
-      <router-view></router-view>
-    </transition>
+                  <div class="commodity-info-container">
+                    <strong>{{commodity.name}}</strong>
+                    <p class="commodity_description_sale_rating">
+                      <span>月售{{commodity.month_sales}}份</span>
+                      <span>好评率{{commodity.satisfy_rate}}%</span>
+                    </p>
+                    <p v-if="commodity.activity" class="commodity-activity">
+                      <span
+                        :style="{color:'#'+commodity.activity.image_text_color,borderColor:'#'+commodity.activity.icon_color}"
+                      >{{commodity.activity.image_text}}</span>
+                    </p>
+                    <div>
+                      <section class="commodity_price">
+                        <span>¥</span>
+                        <span>{{commodity.specfoods[0].price}}</span>
+                        <span v-if="commodity.specifications.length">起</span>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+      </li>-->
+    </ul>
   </div>
 </template>
 <script>
@@ -154,7 +261,7 @@ import {
 } from "src/service/getData";
 import { mapState, mapMutations } from "vuex";
 import { imgBaseUrl } from "src/config/env";
-import BScroll from "better-scroll";
+import IsScroll from "iscroll";
 import { animate } from "src/config/mUtils";
 import storeEvaluate from "src/page/store/storeEvaluate";
 
@@ -189,6 +296,9 @@ export default {
   mounted() {
     console.log("初始化");
     this.initial();
+    setTimeout(() => {
+      this.foodScroll.scrollTo(0, -200, 400);
+    }, 3000);
   },
   methods: {
     ...mapMutations(["LOCATION"]),
@@ -250,22 +360,24 @@ export default {
       this.supports = [...this.supports];
     },
     getFoodListHeight() {
-      const listContainer = this.$refs.menuFoodList;
-      if (listContainer) {
-        let li = listContainer.children[0];
-        const listArr = Array.from(li.children);
-        console.log(li);
-        listArr.forEach((item, index) => {
-          let itemSection = item.children[0].children[0];
-          this.shopListTop[index] = itemSection;
-        });
-        this.listenerScroll();
-      }
+      // const listContainer = this.$refs.menuFoodList;
+      // if (listContainer) {
+      //   let li = listContainer.children[0];
+      //   const listArr = Array.from(li.children);
+      //   console.log(li);
+      //   listArr.forEach((item, index) => {
+      //     let itemSection = item.children[0].children[0];
+      //     this.shopListTop[index] = itemSection;
+      //   });
+      //   this.listenerScroll();
+      // }
+      this.foodScroll = new IsScroll(this.$refs.menuFoodList, {
+        bounce: false
+      });
     },
     listenerScroll() {
-      this.foodScroll = new BScroll(this.$refs.menuFoodList, {
-        bounce: false,
-        click: false
+      this.foodScroll = new IsScroll(this.$refs.menuFoodList, {
+        bounce: false
       });
       // const wrapperMenu = new BScroll("#wrapper_menu", {
       //   click: true
@@ -279,10 +391,10 @@ export default {
       this.menuIndex = index;
       //menuIndexChange解决运动时listenScroll依然监听的bug
       this.menuIndexChange = false;
-      let scrollHeight =
-        this.shopListTop[index].offsetTop +
-        this.$refs.headerLayout.offsetHeight -
-        this.$refs.bar.offsetHeight;
+      // let scrollHeight =
+      //   this.shopListTop[index].offsetTop +
+      //   this.$refs.headerLayout.offsetHeight -
+      //   this.$refs.bar.offsetHeight;
       // console.log("current scrollHeight:" + this.$refs.storeLayout.scrollTop);
       // console.log(" scrollHeight:" + scrollHeight);
       // animate(
@@ -291,7 +403,7 @@ export default {
       //   400,
       //   "ease-out"
       // );
-      this.foodScroll.scrollTo(0, -100, 400);
+      this.foodScroll.scrollTo(0, -200, 400);
     }
   },
   watch: {
@@ -513,9 +625,7 @@ export default {
   color: #333;
 }
 .commodity-container {
-  display: flex;
-  padding-bottom: 2rem;
-  overflow: auto;
+  overflow: hidden;
 }
 .commodity-item {
   overflow: hidden;
@@ -604,11 +714,11 @@ export default {
   display: flex;
   overflow-y: auto;
   position: relative;
+  margin-top: 0.1rem;
 }
 .commodity-layout {
   display: flex;
   flex: 1;
-  padding-bottom: 2rem;
   overflow: auto;
 }
 </style>
