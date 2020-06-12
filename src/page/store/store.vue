@@ -1,7 +1,8 @@
 <template>
-  <div class="commodity-container" ref="menuFoodList">
+  <div ref="storeLayout" class="sotre-layout" @scroll="onScroll($event)">
     <!-- <div> -->
-    <!-- <header ref="headerLayout" class="header-container">
+    <section v-show="!showLoading">
+      <header ref="headerLayout" class="header-container">
         <div ref="bar" class="header-tools">
           <section class="nav-style" @click="$router.go(-1)">
             <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -33,6 +34,10 @@
                 :key="storeTag.id"
                 v-show="storeTag.isShow"
               >
+                <!-- v-show="index<2||item.id==isShowDetial" -->
+
+                <!-- v-show="index>1&&item.id==isShowDetial?'index_activities_item_hide':''" -->
+
                 <span
                   class="index_activities_item_tag"
                   :style="{
@@ -48,8 +53,8 @@
             </div>
           </section>
         </div>
-    </header>-->
-    <!-- <section class="tab-layout" ref="tabLayout">
+      </header>
+      <section class="tab-layout" ref="tabLayout">
         <div class="tab" :class="{choose_tab:chooseTabIndex==0}" @click="changedTab(0)">
           <span>商品</span>
           <div></div>
@@ -58,195 +63,81 @@
           <span>评价</span>
           <div></div>
         </div>
-    </section>-->
-    <ul class="commodity-list">
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
+      </section>
 
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <li>
-        <div>aaaaaaaaaaaa</div>
-      </li>
-      <!-- <li tag="li" v-for="(item,index) in menuList" :key="index">
-            <section>
-              <header class="commodity-type-header">
-                <strong>{{item.name}}</strong>
-                <span>{{item.description}}</span>
-              </header>
-              <div>
-                <div class="commodity-item" v-for="commodity in item.foods" :key="commodity.id">
-                  <div class="commodity-image-container">
-                    <p
-                      class="commodity-tag"
-                      :style="{backgroundColor:'#'+commodity.attributes[0].icon_color}"
-                      v-if="commodity.attributes.length>=1&&commodity.attributes[0]!=null"
-                    >{{commodity.attributes[0].icon_name}}</p>
-                    <img class="commodity-image" :src="imgBaseUrl+commodity.image_path" />
+      <transition-group tag="div" name="switch-tab">
+        <section class="commodity-layout" key="0" v-show="chooseTabIndex==0">
+          <section class="commodity-type-container" ref="wrapperMenu" id="wrapper_menu">
+            <ul class="commodity-type-list">
+              <li v-for="(item,index) in menuList" :key="index" @click="chooseMenu(index) ">
+                <div
+                  :class="{selectedCommodityTypeListItem:menuIndex==index}"
+                  class="commodity-type-list-item"
+                >{{ item.name }}</div>
+              </li>
+            </ul>
+          </section>
+          <section class="commodity-container" ref="menuFoodList">
+            <ul class="commodity-list">
+              <li tag="li" v-for="(item,index) in menuList" :key="index">
+                <section>
+                  <header class="commodity-type-header">
+                    <strong>{{item.name}}</strong>
+                    <span>{{item.description}}</span>
+                  </header>
+                  <div>
+                    <router-link
+                      tag="section"
+                      :to="{path:'/food',query:{image:imgBaseUrl+commodity.image_path,commodity}}"
+                      class="commodity-item"
+                      v-for="commodity in item.foods"
+                      :key="commodity.id"
+                    >
+                      <div class="commodity-image-container">
+                        <p
+                          class="commodity-tag"
+                          :style="{backgroundColor:'#'+commodity.attributes[0].icon_color}"
+                          v-if="commodity.attributes.length>=1&&commodity.attributes[0]!=null"
+                        >{{commodity.attributes[0].icon_name}}</p>
+                        <img class="commodity-image" :src="imgBaseUrl+commodity.image_path" />
+                      </div>
+                      <div class="commodity-info-container">
+                        <strong>{{commodity.name}}</strong>
+                        <p class="commodity_description_sale_rating">
+                          <span>月售{{commodity.month_sales}}份</span>
+                          <span>好评率{{commodity.satisfy_rate}}%</span>
+                        </p>
+                        <p v-if="commodity.activity" class="commodity-activity">
+                          <span
+                            :style="{color:'#'+commodity.activity.image_text_color,borderColor:'#'+commodity.activity.icon_color}"
+                          >{{commodity.activity.image_text}}</span>
+                        </p>
+                        <div>
+                          <section class="commodity_price">
+                            <span>¥</span>
+                            <span>{{commodity.specfoods[0].price}}</span>
+                            <span v-if="commodity.specifications.length">起</span>
+                          </section>
+                        </div>
+                      </div>
+                    </router-link>
                   </div>
-                  <div class="commodity-info-container">
-                    <strong>{{commodity.name}}</strong>
-                    <p class="commodity_description_sale_rating">
-                      <span>月售{{commodity.month_sales}}份</span>
-                      <span>好评率{{commodity.satisfy_rate}}%</span>
-                    </p>
-                    <p v-if="commodity.activity" class="commodity-activity">
-                      <span
-                        :style="{color:'#'+commodity.activity.image_text_color,borderColor:'#'+commodity.activity.icon_color}"
-                      >{{commodity.activity.image_text}}</span>
-                    </p>
-                    <div>
-                      <section class="commodity_price">
-                        <span>¥</span>
-                        <span>{{commodity.specfoods[0].price}}</span>
-                        <span v-if="commodity.specifications.length">起</span>
-                      </section>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-      </li>-->
-    </ul>
+                </section>
+              </li>
+            </ul>
+          </section>
+        </section>
+        <store-evaluate
+          key="1"
+          v-if="storeDetailInfo!=null&&chooseTabIndex==1"
+          :storeId="storeId"
+          :storeInfo="storeDetailInfo"
+        ></store-evaluate>
+      </transition-group>
+    </section>
+    <transition name="loading">
+      <loading v-show="showLoading"></loading>
+    </transition>
   </div>
 </template>
 <script>
@@ -261,7 +152,7 @@ import {
 } from "src/service/getData";
 import { mapState, mapMutations } from "vuex";
 import { imgBaseUrl } from "src/config/env";
-import IsScroll from "iscroll";
+import BScroll from "better-scroll";
 import { animate } from "src/config/mUtils";
 import storeEvaluate from "src/page/store/storeEvaluate";
 
@@ -296,9 +187,6 @@ export default {
   mounted() {
     console.log("初始化");
     this.initial();
-    setTimeout(() => {
-      this.foodScroll.scrollTo(0, -200, 400);
-    }, 3000);
   },
   methods: {
     ...mapMutations(["LOCATION"]),
@@ -320,8 +208,10 @@ export default {
         grade: "评价" + this.storeDetailInfo.rating,
         monthSalesVolume: "月售" + this.storeDetailInfo.recent_order_num,
         deliveryTime:
-          // this.storeDetailInfo.delivery_mode.text +
-          "约" + this.storeDetailInfo.float_minimum_order_amount + "分钟"
+          this.storeDetailInfo.delivery_mode.text +
+          "约" +
+          this.storeDetailInfo.float_minimum_order_amount +
+          "分钟"
       };
       // 装配活动信息
       let supports = [...this.storeDetailInfo.supports];
@@ -360,50 +250,41 @@ export default {
       this.supports = [...this.supports];
     },
     getFoodListHeight() {
-      // const listContainer = this.$refs.menuFoodList;
-      // if (listContainer) {
-      //   let li = listContainer.children[0];
-      //   const listArr = Array.from(li.children);
-      //   console.log(li);
-      //   listArr.forEach((item, index) => {
-      //     let itemSection = item.children[0].children[0];
-      //     this.shopListTop[index] = itemSection;
-      //   });
-      //   this.listenerScroll();
-      // }
-      this.foodScroll = new IsScroll(this.$refs.menuFoodList, {
-        bounce: false
-      });
-    },
-    listenerScroll() {
-      this.foodScroll = new IsScroll(this.$refs.menuFoodList, {
-        bounce: false
-      });
-      // const wrapperMenu = new BScroll("#wrapper_menu", {
-      //   click: true
-      // });
+      const listContainer = this.$refs.menuFoodList;
+      if (listContainer) {
+        let li = listContainer.children[0];
+
+        const listArr = Array.from(li.children);
+        console.log(li);
+        listArr.forEach((item, index) => {
+          let itemSection = item.children[0].children[0];
+          this.shopListTop[index] = itemSection;
+        });
+      }
     },
     //点击左侧食品列表标题，相应列表移动到最顶层
     chooseMenu(index) {
-      if (this.menuIndex == index) {
-        return;
-      }
       this.menuIndex = index;
       //menuIndexChange解决运动时listenScroll依然监听的bug
       this.menuIndexChange = false;
-      // let scrollHeight =
-      //   this.shopListTop[index].offsetTop +
-      //   this.$refs.headerLayout.offsetHeight -
-      //   this.$refs.bar.offsetHeight;
-      // console.log("current scrollHeight:" + this.$refs.storeLayout.scrollTop);
-      // console.log(" scrollHeight:" + scrollHeight);
+      let scrollHeight =
+        this.shopListTop[index].offsetTop +
+        this.$refs.headerLayout.offsetHeight -
+        this.$refs.bar.offsetHeight;
+      console.log("current scrollHeight:" + this.$refs.storeLayout.scrollTop);
+      console.log(" scrollHeight:" + scrollHeight);
+      animate(
+        this.$refs.storeLayout,
+        { scrollTop: scrollHeight },
+        400,
+        "ease-out"
+      );
       // animate(
-      //   this.$refs.storeLayout,
+      //   document.documentElement,
       //   { scrollTop: scrollHeight },
       //   400,
       //   "ease-out"
       // );
-      this.foodScroll.scrollTo(0, -200, 400);
     }
   },
   watch: {
@@ -522,6 +403,12 @@ export default {
     border-bottom: $blue solid 3px;
   }
 }
+.commodity-layout {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
 
 .index_activities {
   padding-left: 1rem;
@@ -587,14 +474,14 @@ export default {
   opacity: 0;
 }
 .sotre-layout {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  right: 0;
-  left: 0;
+  overflow: auto;
   height: 100%;
+  width: 100%;
+  position: absolute;
 }
-
+.commodity-type-container {
+  min-width: 3rem;
+}
 .commodity-type-list-item {
   display: flex;
   justify-content: center;
@@ -625,7 +512,7 @@ export default {
   color: #333;
 }
 .commodity-container {
-  overflow: hidden;
+  flex-grow: 1;
 }
 .commodity-item {
   overflow: hidden;
@@ -705,20 +592,5 @@ export default {
 .switch-tab-leave-to {
   opacity: 0;
   transform: (100%);
-}
-.transitionPage {
-  display: flex;
-  overflow: hidden;
-}
-.commodity-type-container {
-  display: flex;
-  overflow-y: auto;
-  position: relative;
-  margin-top: 0.1rem;
-}
-.commodity-layout {
-  display: flex;
-  flex: 1;
-  overflow: auto;
 }
 </style>
